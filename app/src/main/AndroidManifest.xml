@@ -17,6 +17,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditProduct"></activity>
+
+        <provider
+            android:name=".data.ProductProvider"
+            android:authorities="com.phillipmixon.inventory"
+            android:exported="false" />
     </application>
 
 </manifest>

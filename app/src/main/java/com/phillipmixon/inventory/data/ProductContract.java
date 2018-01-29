@@ -32,8 +32,8 @@ public class ProductContract {
         public static final String _ID = BaseColumns._ID;
 
         public static final String COLUMN_PRODUCT_NAME = "name";
-        public static final int COLUMN_PRODUCT_QUANTITY = 0;
-        public static final int COLUMN_PRODUCT_PRICE = 0;
+        public static final String COLUMN_PRODUCT_QUANTITY = "quantity";
+        public static final String COLUMN_PRODUCT_PRICE = "price";
 
     }
 }
