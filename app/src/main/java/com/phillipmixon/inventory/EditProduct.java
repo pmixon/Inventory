@@ -195,7 +195,7 @@ public class EditProduct extends AppCompatActivity implements LoaderManager.Load
         String productQuantity = mProductQuantityEditText.getText().toString();
         String productPrice = mProductPriceEditText.getText().toString();
 
-        if (TextUtils.isEmpty(productName) || TextUtils.isEmpty(productQuantity) || TextUtils.isEmpty(productPrice)) {
+        if (TextUtils.isEmpty(productName) || TextUtils.isEmpty(productQuantity) || TextUtils.isEmpty(productPrice) || mProductBitmap == null) {
             Toast.makeText(this, "Invalid product values!", Toast.LENGTH_SHORT).show();
             return;
         }
