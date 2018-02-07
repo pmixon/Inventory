@@ -75,7 +75,7 @@ public class ProductProvider extends ContentProvider {
 
         switch (match) {
             case PRODUCTS:
-                return insertProduct(uri,contentValues);
+                return insertProduct(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Invalid uri on insert: " + uri);
         }
@@ -84,19 +84,49 @@ public class ProductProvider extends ContentProvider {
     public Uri insertProduct(Uri uri, ContentValues values) {
         SQLiteDatabase db = mProductDbHelper.getWritableDatabase();
         long newId;
-        newId = db.insert(ProductContract.ProductEntry.TABLE_NAME,null,values);
+        newId = db.insert(ProductContract.ProductEntry.TABLE_NAME, null, values);
 
         getContext().getContentResolver().notifyChange(uri, null);
-        return ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI,newId);
+        return ContentUris.withAppendedId(ProductContract.ProductEntry.CONTENT_URI, newId);
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+    public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        // Get writeable database
+        SQLiteDatabase database = mProductDbHelper.getWritableDatabase();
+
+        int rowsDeleted;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PRODUCTS:
+                // Delete all rows that match the selection and selection args
+                rowsDeleted = database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case PRODUCT_ID:
+                // Delete a single row given by the ID in the URI
+                selection = ProductContract.ProductEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                rowsDeleted = database.delete(ProductContract.ProductEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for " + uri);
+        }
+
+        if (rowsDeleted != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsDeleted;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
-        return 0;
+        SQLiteDatabase db = mProductDbHelper.getWritableDatabase();
+        int id;
+        s = ProductContract.ProductEntry._ID + "=?";
+        strings = new String[]{String.valueOf(ContentUris.parseId(uri))};
+
+        id = db.update(ProductContract.ProductEntry.TABLE_NAME, contentValues, s, strings);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return id;
     }
 }
